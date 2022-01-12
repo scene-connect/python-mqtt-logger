@@ -41,6 +41,7 @@ parser.add_argument(
     default=None,
     help="The logfile to write to. Default: %(default)s (stdout)",
 )
+parser.add_argument("--tls", action="store_true", help="Use TLS")
 args = parser.parse_args()
 
 logging.basicConfig(level=logging.DEBUG, filename=args.logfile)
@@ -51,6 +52,10 @@ mqttc.enable_logger(logger)
 
 if args.username:
     mqttc.username_pw_set(args.username, args.password)
+if args.tls:
+    import certifi
+
+    mqttc.tls_set(certifi.where())
 
 mqttc.connect(args.host, args.port, 60)
 mqttc.subscribe(args.topic, args.qos)
