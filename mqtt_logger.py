@@ -47,8 +47,14 @@ args = parser.parse_args()
 logging.basicConfig(level=logging.DEBUG, filename=args.logfile)
 logger = logging.getLogger("mqtt_logger")
 
+
+def on_message(client, userdata, msg):
+    logger.info("Received message: (%s) %s", msg.topic, msg.payload)
+
+
 mqttc = mqtt.Client()
 mqttc.enable_logger(logger)
+mqttc.on_message = on_message
 
 if args.username:
     mqttc.username_pw_set(args.username, args.password)
